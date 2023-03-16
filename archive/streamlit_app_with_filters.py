@@ -21,7 +21,7 @@ price_range = [min(df['price']), max(df['price'])]
 price_slider = st.sidebar.slider('Prix des logements', value=(price_range[0], price_range[1]))
 
 neighbourhood_group_options = st.sidebar.multiselect(
-    'What are your favorite colors',
+    'Groupes de quartiers',
     list(df['neighbourhood_group'].unique()),
     list(df['neighbourhood_group'].unique())
 )
@@ -56,7 +56,7 @@ st.plotly_chart(fig)
 
 st.subheader('Cartographie des logements')
 fig = px.scatter_mapbox(df_sample, lat='latitude', lon='longitude', labels='labels',
-                        mapbox_style="carto-positron", hover_name="name")
+                        mapbox_style="carto-positron", hover_name="name", color='price')
 
 
 st.plotly_chart(fig)
