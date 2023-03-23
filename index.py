@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
-import pickle
-from joblib import dump, load
+from joblib import  load
 
 st.title("Bienvenue sur la webapp ! 👋")
 

@@ -1,3 +1,6 @@
 .idea
 .ipynb*
 *~lock*
+camembert-ner/
+__pycache__/
+archive
