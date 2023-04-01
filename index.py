@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from joblib import  load
+from joblib import load
 
 st.title("Bienvenue sur la webapp ! 👋")
 
@@ -15,8 +15,6 @@ def load_data():
     data['windspeed'] = data['windspeed'] * 67
     data['weekday'] = data['dteday'].dt.day_name()
     data['season'] = data['season'].map({1: 'winter', 2: 'spring', 3: 'summer', 4: 'fall'})
-    data['month'] = data['dteday'].dt.month_name()
-    data['weekday'] = data['dteday'].dt.day_name()
     data = data.join(pd.get_dummies(data['weekday'], prefix='weekday'))
     return data
 
@@ -25,3 +23,10 @@ def load_model(path):
     model = load(path)
     return model
 
+
+# appel des données
+df = load_data()
+
+# affichage des données
+st.subheader("Aperçu des données")
+st.dataframe(df.head(100))

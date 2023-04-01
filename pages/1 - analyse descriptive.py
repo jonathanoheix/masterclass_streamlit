@@ -32,19 +32,9 @@ df_filter = df[
     (df['weekday'].isin(weekday_values))
     ]
 
-# affichage des données
-st.subheader("Aperçu des données")
-st.dataframe(df.head(100))
-
 # nuage de points
 st.subheader("Evolution du nombre d'utilisations quotidiennes")
 fig = px.scatter(df_filter, x="dteday", y="cnt", color="temp", color_continuous_scale="thermal")
-st.plotly_chart(fig)
-
-# violin plot
-st.subheader("Distribution du nombre d'utilisations selon la saison")
-fig = px.violin(df_filter, y="cnt", x="season", color="season", box=True,
-                color_discrete_sequence=["#87CEEB", "#90EE90", "#FFA07A", "#FFDAB9"])
 st.plotly_chart(fig)
 
 # diagramme en barres
@@ -60,3 +50,9 @@ st.plotly_chart(fig)
 # métrique
 st.metric(label="Corrélation entre la vitesse du vent et le nombre d'utilisations",
           value=np.round(df_filter['cnt'].corr(df_filter['windspeed']), 2))
+
+# violin plot
+st.subheader("Distribution du nombre d'utilisations selon la saison")
+fig = px.violin(df_filter, y="cnt", x="season", color="season", box=True,
+                color_discrete_sequence=["#87CEEB", "#90EE90", "#FFA07A", "#FFDAB9"])
+st.plotly_chart(fig)

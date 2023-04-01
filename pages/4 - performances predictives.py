@@ -10,32 +10,15 @@ st.title("Analyse des performances prédictives")
 # chargement des données
 df = load_data()
 
-# champs de filtrage
-year = st.sidebar.slider('Année de prédiction', min(df['dteday'].dt.year), max(df['dteday'].dt.year),
-                         max(df['dteday'].dt.year))
-temp_range = st.sidebar.slider('Valeurs de température', min(df['temp']), max(df['temp']),
-                               [min(df['temp']), max(df['temp'])])
-hum_range = st.sidebar.slider("Valeurs d'humidité", min(df['hum']), max(df['hum']), [min(df['hum']), max(df['hum'])])
-windspeed_range = st.sidebar.slider('Valeurs de vitesse du vent', min(df['windspeed']), max(df['windspeed']),
-                                    [min(df['windspeed']), max(df['windspeed'])])
-weekday_values = st.sidebar.multiselect('Jours de la semaine', df['weekday'].unique(), df['weekday'].unique())
 selected_model = st.selectbox('Modèle sélectionné', ('model_rf_2011', 'model_tree_2011'))
 
 # chargement du modèle
-rf_model = load_model('{}.joblib'.format(selected_model))
+model = load_model('{}.joblib'.format(selected_model))
 
-# filtrage des données
-df = df[
-    (df['temp'].between(temp_range[0], temp_range[1])) &
-    (df['hum'].between(hum_range[0], hum_range[1])) &
-    (df['windspeed'].between(windspeed_range[0], windspeed_range[1])) &
-    (df['weekday'].isin(weekday_values))
-]
-
-df_predict = df[df['dteday'].dt.year == year].copy()
+df_predict = df[df['dteday'].dt.year == 2012].copy()
 
 # calcul des prédictions et de l'erreur absolue avec les valeurs réelles
-df_predict['prediction'] = rf_model.predict(df_predict[rf_model.feature_names_in_])
+df_predict['prediction'] = model.predict(df_predict[model.feature_names_in_])
 df_predict['absolute_error'] = np.abs(df_predict['prediction'] - df_predict['cnt'])
 
 # nuage de points
@@ -49,7 +32,7 @@ col1, col2, col3, col4 = st.columns(4)
 col1.metric('RMSE', np.round(np.sqrt(mean_squared_error(df_predict['prediction'], df_predict['cnt'])), 2))
 col2.metric('MAE', np.round(mean_absolute_error(df_predict['prediction'], df_predict['cnt']), 2))
 col3.metric('MAPE', '{} %'.format(
-    np.round(mean_absolute_percentage_error(df_predict['prediction'], df_predict['cnt'])*100, 2)))
+    np.round(mean_absolute_percentage_error(df_predict['prediction'], df_predict['cnt']) * 100, 2)))
 col4.metric('ME', np.round(np.mean(df_predict['prediction'] - df_predict['cnt']), 2))
 
 # comparaison des valeurs des deux années
@@ -59,5 +42,3 @@ df_cnt['year'] = df_cnt['dteday'].dt.year.astype(str)
 df_cnt['date_str'] = df_cnt['dteday'].dt.strftime("%m/%d")
 fig = px.scatter(df_cnt, x="date_str", y="cnt", color="year")
 st.plotly_chart(fig)
-
-

@@ -8,6 +8,7 @@ st.title("Analyse du modèle entraîné")
 
 # chargement des données et du modèle de RF
 df = load_data()
+
 rf_model = load_model('model_rf_2011.joblib')
 
 # filtrage des données sur la période de train
